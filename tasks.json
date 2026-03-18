@@ -1,8 +1,26 @@
 [
     {
-        "title": "Eat",
-        "done": false,
-        "due": "01-01-2026",
+        "title": "Jump",
+        "done": true,
+        "due": "2026-03-02",
+        "priority": "high"
+    },
+    {
+        "title": "Die",
+        "done": true,
+        "due": "2026-03-20",
+        "priority": "high"
+    },
+    {
+        "title": "fun",
+        "done": true,
+        "due": "2026-02-03",
+        "priority": "medium"
+    },
+    {
+        "title": "hey",
+        "done": true,
+        "due": "2026-03-09",
         "priority": "medium"
     }
 ]

@@ -1,92 +1,139 @@
+from flask import Flask, render_template, request, redirect
 import json
 import os
 
+app = Flask(__name__)
 FILE = "tasks.json"
+
 
 def load_tasks():
     if not os.path.exists(FILE):
         return []
-
     try:
         with open(FILE, "r") as f:
             return json.load(f)
     except:
         return []
 
+
 def save_tasks(tasks):
     with open(FILE, "w") as f:
         json.dump(tasks, f, indent=4)
 
-def add_task():
-    title = input("Enter task: ")
-    due = input("Enter the Due Date (DD-MM-YYY): ")
-    priority = input("Enter the Priority of Task(low/medium/high): ")
+
+@app.route("/")
+def index():
+    tasks = load_tasks()
+
+    # GET PARAMETERS
+    filter_type = request.args.get("filter", "all")
+    sort = request.args.get("sort")
+    order = request.args.get("order", "asc")
+    priority_filter = request.args.get("priority")
+    search = request.args.get("search")
+
+    # FILTER STATUS
+    if filter_type == "pending":
+        tasks = [t for t in tasks if not t["done"]]
+    elif filter_type == "done":
+        tasks = [t for t in tasks if t["done"]]
+
+    # FILTER PRIORITY
+    if priority_filter:
+        tasks = [t for t in tasks if t["priority"] == priority_filter]
+
+    # SEARCH
+    if search:
+        tasks = [t for t in tasks if search.lower() in t["title"].lower()]
+
+    # SORT
+    if sort == "due":
+        tasks.sort(key=lambda x: x["due"] or "")
+    elif sort == "priority":
+        priority_order = {"high": 1, "medium": 2, "low": 3}
+        tasks.sort(key=lambda x: priority_order.get(x["priority"], 3))
+
+    # ASC / DESC
+    if order == "desc":
+        tasks.reverse()
+
+    # STATS
+    total = len(tasks)
+    done = len([t for t in tasks if t["done"]])
+    pending = total - done
+
+    return render_template(
+    "index.html",
+    tasks=tasks,
+    total=total,
+    done=done,
+    pending=pending,
+    filter_type=filter_type,
+    sort=sort,
+    order=order,
+    priority_filter=priority_filter,
+    search=search
+)
+
+
+@app.route("/add", methods=["POST"])
+def add():
+    title = request.form.get("title")
+    due = request.form.get("due")
+    priority = request.form.get("priority")
+
     if priority not in ["low", "medium", "high"]:
         priority = "low"
+
     tasks = load_tasks()
-    tasks.append({"title": title, "done": False, "due": due, "priority": priority})
+    tasks.append({
+        "title": title,
+        "done": False,
+        "due": due,
+        "priority": priority
+    })
+
     save_tasks(tasks)
-    print("Task added!")
+    return redirect("/")
 
-def view_tasks():
-    tasks = load_tasks()
-    for i, task in enumerate(tasks):
-        status = "✅" if task["done"] else "❌"
-        if task["priority"] == "high":
-            p = "🔥"
-        elif task["priority"] == "medium":
-            p = "⚡"
-        else:
-            p = "🟢"
-        print(f"{i+1}. {task['title']} [{status}] {task['due']} {p}")
 
-def mark_done():
-    view_tasks()
-    num = int(input("Enter task number: ")) - 1
+@app.route("/done/<int:index>")
+def mark_done(index):
     tasks = load_tasks()
-    tasks[num]["done"] = True
-    save_tasks(tasks)
-    print("Task completed!")
-    
-def delete_task():
-    view_tasks()
-    num = int(input("Enter task number to delete: ")) - 1
-    tasks = load_tasks()
+    if 0 <= index < len(tasks):
+        if not tasks[index]["done"]:
+            tasks[index]["done"] = True
+            save_tasks(tasks)
+    return redirect("/")
 
-    if 0 <= num < len(tasks):
-        tasks.pop(num)
+
+@app.route("/delete/<int:index>")
+def delete(index):
+    tasks = load_tasks()
+    if 0 <= index < len(tasks):
+        tasks.pop(index)
         save_tasks(tasks)
-        print("Task deleted!")
-    else:
-        print("Invalid task number!")
-        
-def edit_task():
-    view_tasks()
-    num = int(input("Enter task number to edit: ")) - 1
+    return redirect("/")
+
+
+@app.route("/edit/<int:index>")
+def edit(index):
     tasks = load_tasks()
+    if 0 <= index < len(tasks):
+        return render_template("edit.html", task=tasks[index], index=index)
+    return redirect("/")
 
-    if 0 <= num < len(tasks):
-        new_title = input("Enter new task name: ")
-        tasks[num]["title"] = new_title
+
+@app.route("/update/<int:index>", methods=["POST"])
+def update(index):
+    tasks = load_tasks()
+    if 0 <= index < len(tasks):
+        tasks[index]["title"] = request.form.get("title")
+        tasks[index]["due"] = request.form.get("due")
+        tasks[index]["priority"] = request.form.get("priority")
         save_tasks(tasks)
-        print("Task updated!")
-    else:
-        print("Invalid task number!")
+    return redirect("/")
 
-while True:
-    print("\n1. Add Task\n2. View Tasks\n3. Mark Done\n4. Delete Task\n5. Edit Task\n6. Exit")
-    choice = input("Choose: ")
 
-    if choice == "1":
-        add_task()
-    elif choice == "2":
-        view_tasks()
-    elif choice == "3":
-        mark_done()
-    elif choice == "4":
-        delete_task()
-    elif choice == "5":
-        edit_task()
-    elif choice == "6":
-        print("Exiting...")
-        break
+if __name__ == "__main__":
+    app.run(debug=True)
