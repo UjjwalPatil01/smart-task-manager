@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Smart Task Manager</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
@@ -7,98 +8,106 @@
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-    <h1>Smart Task Manager 🚀</h1>
+        <h1>Smart Task Manager 🚀</h1>
 
-    <!-- 📊 STATS -->
-    <div class="stats">
-        <div>Total <b>{{ total }}</b></div>
-        <div>Done <b>{{ done }}</b></div>
-        <div>Pending <b>{{ pending }}</b></div>
-    </div>
+        <!-- 📊 STATS -->
+        <div class="stats">
+            <div>Total <b>{{ total }}</b></div>
+            <div>Done <b>{{ done }}</b></div>
+            <div>Pending <b>{{ pending }}</b></div>
+        </div>
 
-    <!-- ADD TASK -->
-    <form class="add-form" action="/add" method="POST">
-        <input type="text" name="title" placeholder="Enter task..." required>
-        <input type="date" name="due" class="date-input">
+        <!-- ADD TASK -->
+        <form class="add-form" action="/add" method="POST">
+            <input type="text" name="title" placeholder="Enter task..." required>
+            <input type="date" name="due" class="date-input">
 
-        <select name="priority">
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-        </select>
+            <select name="priority">
+                <option value="auto">Auto (AI)</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
 
-        <button>Add</button>
-    </form>
+            <button>Add</button>
+        </form>
 
-    <!-- CONTROLS -->
-    <form method="GET" class="controls">
+        <!-- CONTROLS -->
+        <form method="GET" class="controls">
 
-        <select name="filter">
-            <option value="all" {% if filter_type=="all" %}selected{% endif %}>All</option>
-            <option value="pending" {% if filter_type=="pending" %}selected{% endif %}>Pending</option>
-            <option value="done" {% if filter_type=="done" %}selected{% endif %}>Completed</option>
-        </select>
+            <select name="filter">
+                <option value="all" {% if filter_type=="all" %}selected{% endif %}>All</option>
+                <option value="pending" {% if filter_type=="pending" %}selected{% endif %}>Pending</option>
+                <option value="done" {% if filter_type=="done" %}selected{% endif %}>Completed</option>
+            </select>
 
-        <select name="priority">
-            <option value="">All Priority</option>
-            <option value="high" {% if priority_filter=="high" %}selected{% endif %}>High</option>
-            <option value="medium" {% if priority_filter=="medium" %}selected{% endif %}>Medium</option>
-            <option value="low" {% if priority_filter=="low" %}selected{% endif %}>Low</option>
-        </select>
+            <select name="priority">
+                <option value="">All Priority</option>
+                <option value="high" {% if priority_filter=="high" %}selected{% endif %}>High</option>
+                <option value="medium" {% if priority_filter=="medium" %}selected{% endif %}>Medium</option>
+                <option value="low" {% if priority_filter=="low" %}selected{% endif %}>Low</option>
+            </select>
 
-        <select name="sort">
-            <option value="">Sort By</option>
-            <option value="due" {% if sort=="due" %}selected{% endif %}>Due Date</option>
-            <option value="priority" {% if sort=="priority" %}selected{% endif %}>Priority</option>
-        </select>
+            <select name="sort">
+                <option value="">Sort By</option>
+                <option value="due" {% if sort=="due" %}selected{% endif %}>Due Date</option>
+                <option value="priority" {% if sort=="priority" %}selected{% endif %}>Priority</option>
+            </select>
 
-        <select name="order">
-            <option value="asc" {% if order=="asc" %}selected{% endif %}>Ascending</option>
-            <option value="desc" {% if order=="desc" %}selected{% endif %}>Descending</option>
-        </select>
+            <select name="order">
+                <option value="asc" {% if order=="asc" %}selected{% endif %}>Ascending</option>
+                <option value="desc" {% if order=="desc" %}selected{% endif %}>Descending</option>
+            </select>
 
-        <input type="text" name="search" value="{{ search or '' }}" placeholder="Search...">
+            <input type="text" name="search" value="{{ search or '' }}" placeholder="Search...">
 
-        <button type="submit">Apply</button>
-    </form>
+            <button type="submit">Apply</button>
+        </form>
 
-    <!-- TASK LIST -->
-    {% for task in tasks %}
-    <div class="task">
+        <!-- TASK LIST -->
+        {% for task in tasks %}
+        <div class="task">
 
-        <div>
-            <b>{{ task.title }}</b><br>
-            <small>{{ task.due }}</small>
+            <div>
+                <b>{{ task.title }}</b><br>
+                <small>{{ task.due }}</small>
 
-            {% if task.priority == "high" %}
+                {% if task.priority == "high" %}
                 🔥
-            {% elif task.priority == "medium" %}
+                {% elif task.priority == "medium" %}
                 ⚡
-            {% else %}
+                {% else %}
                 🟢
-            {% endif %}
+                {% endif %}
 
-            {% if task.done %}
+                {% if task.done %}
                 ✅
-            {% else %}
+                {% else %}
                 ❌
-            {% endif %}
-        </div>
+                {% endif %}
+                {% if task.ai %}
+                🤖
+                {% endif %}
+            </div>
 
-        <div class="actions">
-            {% if not task.done %}
+            <div class="actions">
+                {% if not task.done %}
                 <a href="/done/{{ loop.index0 }}">Done</a>
-            {% endif %}
-            <a href="/edit/{{ loop.index0 }}">Edit</a>
-            <a href="/delete/{{ loop.index0 }}">Delete</a>
+                {% endif %}
+                <a href="/edit/{{ loop.index0 }}">Edit</a>
+                <a href="/delete/{{ loop.index0 }}">Delete</a>
+            </div>
+
         </div>
+        {% endfor %}
+        {% if tasks|length == 0 %}
+        <p style="text-align:center; opacity:0.6;">No tasks found 🚀</p>
+        {% endif %}
 
     </div>
-    {% endfor %}
-
-</div>
 
 </body>
+
 </html>

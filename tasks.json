@@ -1,26 +1,37 @@
 [
     {
-        "title": "Jump",
-        "done": true,
+        "title": "urgent exam tomorrow",
+        "done": false,
+        "due": "2026-03-01",
+        "priority": "high",
+        "ai": true
+    },
+    {
+        "title": "watch movie",
+        "done": false,
         "due": "2026-03-02",
-        "priority": "high"
+        "priority": "low",
+        "ai": true
     },
     {
-        "title": "Die",
-        "done": true,
-        "due": "2026-03-20",
-        "priority": "high"
+        "title": "project meeting",
+        "done": false,
+        "due": "2026-03-03",
+        "priority": "medium",
+        "ai": true
     },
     {
-        "title": "fun",
-        "done": true,
-        "due": "2026-02-03",
-        "priority": "medium"
+        "title": "something important",
+        "done": false,
+        "due": "2026-03-04",
+        "priority": "low",
+        "ai": true
     },
     {
-        "title": "hey",
-        "done": true,
-        "due": "2026-03-09",
-        "priority": "medium"
+        "title": "important sutdies for todays exam",
+        "done": false,
+        "due": "2026-03-11",
+        "priority": "high",
+        "ai": true
     }
 ]
