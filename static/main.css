@@ -80,3 +80,25 @@ button {
     color: #38bdf8;
     text-decoration: none;
 }
+
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+
+    .stats {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .task {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: center;
+    }
+}
