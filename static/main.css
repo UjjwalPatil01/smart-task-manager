@@ -66,6 +66,7 @@ button {
     border-radius: 15px;
     display: flex;
     justify-content: space-between;
+    transition: all 0.2s ease;
 }
 
 .task:hover {

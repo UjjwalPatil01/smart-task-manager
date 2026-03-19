@@ -1,14 +1,77 @@
 from flask import Flask, render_template, request, redirect
 import json
 import os
+from dotenv import load_dotenv
+from google import genai
+
+# =========================
+# CONFIGURATION
+# =========================
+load_dotenv()
+
+API_KEY = os.getenv("GOOGLE_API_KEY")
+
+if not API_KEY:
+    raise ValueError("❌ GOOGLE_API_KEY not found. Check your .env file")
+
+# Initialize Gemini Client
+client = genai.Client(api_key=API_KEY)
 
 app = Flask(__name__)
 FILE = "tasks.json"
 
 
+# =========================
+# AI FUNCTION
+# =========================
+def suggest_priority(title):
+    """
+    Uses Gemini AI to classify task priority.
+    Input: task title
+    Output: 'high' / 'medium' / 'low'
+    """
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=f"""
+            Classify this task into ONLY ONE WORD: high, medium, or low.
+
+            Task: {title}
+
+            Rules:
+            - urgent, exam, deadline → high
+            - project, meeting → medium
+            - others → low
+
+            Only return exactly one word: high, medium, or low.
+            """
+        )
+
+        result = (response.text or "").strip().lower()
+        print("AI RESPONSE:", result)
+
+        if "high" in result:
+            return "high"
+        elif "medium" in result:
+            return "medium"
+        elif "low" in result:
+            return "low"
+
+        return "low"
+
+    except Exception as e:
+        print("AI ERROR:", e)
+        return "low"
+
+
+# =========================
+# DATA FUNCTIONS
+# =========================
 def load_tasks():
+    """Load tasks from JSON file"""
     if not os.path.exists(FILE):
         return []
+
     try:
         with open(FILE, "r") as f:
             return json.load(f)
@@ -17,15 +80,20 @@ def load_tasks():
 
 
 def save_tasks(tasks):
+    """Save tasks to JSON file"""
     with open(FILE, "w") as f:
         json.dump(tasks, f, indent=4)
 
+
+# =========================
+# ROUTES
+# =========================
 
 @app.route("/")
 def index():
     tasks = load_tasks()
 
-    # GET PARAMETERS
+    # GET parameters from URL
     filter_type = request.args.get("filter", "all")
     sort = request.args.get("sort")
     order = request.args.get("order", "asc")
@@ -53,7 +121,7 @@ def index():
         priority_order = {"high": 1, "medium": 2, "low": 3}
         tasks.sort(key=lambda x: priority_order.get(x["priority"], 3))
 
-    # ASC / DESC
+    # ORDER
     if order == "desc":
         tasks.reverse()
 
@@ -63,24 +131,33 @@ def index():
     pending = total - done
 
     return render_template(
-    "index.html",
-    tasks=tasks,
-    total=total,
-    done=done,
-    pending=pending,
-    filter_type=filter_type,
-    sort=sort,
-    order=order,
-    priority_filter=priority_filter,
-    search=search
-)
+        "index.html",
+        tasks=tasks,
+        total=total,
+        done=done,
+        pending=pending,
+        filter_type=filter_type,
+        sort=sort,
+        order=order,
+        priority_filter=priority_filter,
+        search=search
+    )
 
 
 @app.route("/add", methods=["POST"])
 def add():
-    title = request.form.get("title")
+    title = request.form.get("title", "").strip()
     due = request.form.get("due")
-    priority = request.form.get("priority")
+    user_priority = request.form.get("priority")
+
+    if not title:
+        return redirect("/")
+
+    # AI or manual priority
+    if user_priority == "auto":
+        priority = suggest_priority(title)
+    else:
+        priority = user_priority
 
     if priority not in ["low", "medium", "high"]:
         priority = "low"
@@ -90,7 +167,8 @@ def add():
         "title": title,
         "done": False,
         "due": due,
-        "priority": priority
+        "priority": priority,
+        "ai": user_priority == "auto"
     })
 
     save_tasks(tasks)
@@ -100,40 +178,51 @@ def add():
 @app.route("/done/<int:index>")
 def mark_done(index):
     tasks = load_tasks()
-    if 0 <= index < len(tasks):
-        if not tasks[index]["done"]:
-            tasks[index]["done"] = True
-            save_tasks(tasks)
+
+    if 0 <= index < len(tasks) and not tasks[index]["done"]:
+        tasks[index]["done"] = True
+        save_tasks(tasks)
+
     return redirect("/")
 
 
 @app.route("/delete/<int:index>")
 def delete(index):
     tasks = load_tasks()
+
     if 0 <= index < len(tasks):
         tasks.pop(index)
         save_tasks(tasks)
+
     return redirect("/")
 
 
 @app.route("/edit/<int:index>")
 def edit(index):
     tasks = load_tasks()
+
     if 0 <= index < len(tasks):
         return render_template("edit.html", task=tasks[index], index=index)
+
     return redirect("/")
 
 
 @app.route("/update/<int:index>", methods=["POST"])
 def update(index):
     tasks = load_tasks()
+
     if 0 <= index < len(tasks):
         tasks[index]["title"] = request.form.get("title")
         tasks[index]["due"] = request.form.get("due")
         tasks[index]["priority"] = request.form.get("priority")
+
         save_tasks(tasks)
+
     return redirect("/")
 
 
+# =========================
+# RUN APP
+# =========================
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=10000)
