@@ -98,6 +98,7 @@ def index():
     sort = request.args.get("sort")
     order = request.args.get("order", "asc")
     priority_filter = request.args.get("priority")
+    category_filter = request.args.get("category")
     search = request.args.get("search")
 
     # FILTER STATUS
@@ -109,6 +110,8 @@ def index():
     # FILTER PRIORITY
     if priority_filter:
         tasks = [t for t in tasks if t["priority"] == priority_filter]
+    if category_filter:
+        tasks = [t for t in tasks if t["category"] == category_filter]
 
     # SEARCH
     if search:
@@ -149,6 +152,7 @@ def add():
     title = request.form.get("title", "").strip()
     due = request.form.get("due")
     user_priority = request.form.get("priority")
+    category = request.form.get("category")
 
     if not title:
         return redirect("/")
@@ -168,6 +172,7 @@ def add():
         "done": False,
         "due": due,
         "priority": priority,
+        "category": category,
         "ai": user_priority == "auto"
     })
 
@@ -181,6 +186,16 @@ def mark_done(index):
 
     if 0 <= index < len(tasks) and not tasks[index]["done"]:
         tasks[index]["done"] = True
+        save_tasks(tasks)
+
+    return redirect("/")
+
+@app.route("/undo/<int:index>")
+def mark_undo(index):
+    tasks = load_tasks()
+
+    if 0 <= index < len(tasks) and tasks[index]["done"]:
+        tasks[index]["done"] = False
         save_tasks(tasks)
 
     return redirect("/")
@@ -215,6 +230,7 @@ def update(index):
         tasks[index]["title"] = request.form.get("title")
         tasks[index]["due"] = request.form.get("due")
         tasks[index]["priority"] = request.form.get("priority")
+        tasks[index]["category"] = request.form.get("category")
 
         save_tasks(tasks)
 
