@@ -31,6 +31,12 @@
                 <option value="high">High</option>
             </select>
 
+            <select name="category">
+                <option value="personal">Personal</option>
+                <option value="study">Study</option>
+                <option value="work">Work</option>
+            </select>
+
             <button>Add</button>
         </form>
 
@@ -48,6 +54,13 @@
                 <option value="high" {% if priority_filter=="high" %}selected{% endif %}>High</option>
                 <option value="medium" {% if priority_filter=="medium" %}selected{% endif %}>Medium</option>
                 <option value="low" {% if priority_filter=="low" %}selected{% endif %}>Low</option>
+            </select>
+
+            <select name="category">
+                <option value="">All Categories</option>
+                <option value="personal" {% if category_filter=="personal" %}selected{% endif %}>Personal</option>
+                <option value="study" {% if category_filter=="study" %}selected{% endif %}>Study</option>
+                <option value="work" {% if category_filter=="work" %}selected{% endif %}>Work</option>
             </select>
 
             <select name="sort">
@@ -73,13 +86,21 @@
             <div>
                 <b>{{ task.title }}</b><br>
                 <small>{{ task.due }}</small>
-
+                
                 {% if task.priority == "high" %}
                 🔥
                 {% elif task.priority == "medium" %}
                 ⚡
                 {% else %}
                 🟢
+                {% endif %}
+
+                {% if task.category == "study" %}
+                📚
+                {% elif task.category == "work" %}
+                💼
+                {% else %}
+                🧘
                 {% endif %}
 
                 {% if task.done %}
@@ -95,6 +116,9 @@
             <div class="actions">
                 {% if not task.done %}
                 <a href="/done/{{ loop.index0 }}">Done</a>
+                {% endif %}
+                {% if task.done %}
+                <a href="/undo/{{ loop.index0 }}">Undo</a>
                 {% endif %}
                 <a href="/edit/{{ loop.index0 }}">Edit</a>
                 <a href="/delete/{{ loop.index0 }}">Delete</a>
