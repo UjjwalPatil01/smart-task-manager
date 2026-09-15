@@ -1,163 +1,115 @@
-# 🚀 Smart Task Manager (AI-Powered)
+# Smart Task Manager — AI-Powered Task Management
 
-A modern, AI-powered task management web application built using **Flask** and **Google Gemini AI**, designed to help users efficiently manage and prioritize tasks.
+A full-stack task management application built with **Python, Flask, and Google Gemini**, combining everyday CRUD workflows with AI-assisted task-priority classification.
 
-🔗 **Live Demo:**  
-https://smart-task-manager-ri8k.onrender.com/
+**Live Demo:** https://smart-task-manager-ri8k.onrender.com/
 
----
+## Overview
 
-## ✨ Features
+Smart Task Manager is a practical application for creating, updating, completing, deleting, searching, filtering, and sorting tasks. Google Gemini is used to suggest task priority from the task description, turning a conventional CRUD application into a small applied-AI workflow.
 
-### 🧠 AI-Powered Priority Detection
-Automatically classifies tasks into:
-- 🔥 High (urgent, exam, deadline)
-- ⚡ Medium (project, meeting)
-- 🟢 Low (others)
+## Key Features
 
-Uses **Google Gemini API** for intelligent predictions.
+- 🤖 **AI priority classification** using Google Gemini.
+- ✅ **CRUD task management** — create, edit, complete, and delete tasks.
+- 🔎 **Search and filtering** by status and priority.
+- 📅 **Sorting** by due date and priority.
+- 📊 **Live task statistics** for total, completed, and pending tasks.
+- 📱 **Responsive UI** designed for desktop and mobile screens.
+- ☁️ **Render deployment** for a publicly accessible demo.
 
----
+## AI Workflow
 
-### 📋 Task Management
-- Add tasks with:
-  - Title  
-  - Due Date  
-  - Priority (Manual or AI-suggested)  
-- ✅ Mark tasks as completed  
-- ✏️ Edit existing tasks  
-- 🗑️ Delete tasks  
-
----
-
-### 🔍 Smart Filtering & Search
-- Filter tasks by status:
-  - All / Pending / Completed  
-- Filter tasks by priority  
-- Search tasks by keywords  
-
----
-
-### 📊 Sorting & Live Statistics
-- Sort tasks by:
-  - Due Date  
-  - Priority  
-- Ascending / Descending order  
-- View live statistics:
-  - Total tasks  
-  - Completed tasks  
-  - Pending tasks  
-
----
-
-### 🎨 UI/UX
-- Clean dark theme  
-- Smooth interactions  
-- Fully mobile-friendly and responsive design  
-
----
-
-## 🛠️ Tech Stack
-
-- **Backend:** Flask (Python)  
-- **Frontend:** HTML, CSS (Jinja2 Templates)  
-- **AI Integration:** Google Gemini API (`gemini-2.5-flash`)  
-- **Database:** JSON (lightweight local storage)  
-- **Deployment:** Render  
-
----
-
-## 📂 Project Structure
-
+```text
+Task Title / Details
+        ↓
+Python / Flask Backend
+        ↓
+Google Gemini API
+        ↓
+AI Suggested Priority
+   High / Medium / Low
+        ↓
+Task Stored + Displayed
 ```
+
+## Technology Stack
+
+| Area | Technology |
+|---|---|
+| Backend | Python, Flask |
+| Frontend | HTML, CSS, Jinja2 templates |
+| AI | Google Gemini API (`gemini-2.5-flash`) |
+| Storage | JSON-based local persistence |
+| Deployment | Render |
+
+## Project Structure
+
+```text
 smart-task-manager/
-│
-├── app.py # Main Flask application logic
-├── tasks.json # Local database for storing tasks
-├── requirements.txt # Python dependencies
-├── .env # Environment variables (API Key)
-├── .gitignore # Files to ignore in Git
-│
+├── app.py
+├── tasks.json
+├── requirements.txt
 ├── templates/
-│ ├── index.html # Main dashboard UI
-│ └── edit.html # Task editing UI
-│
+│   ├── index.html
+│   └── edit.html
 ├── static/
-│ └── main.css # Custom styling
-│
-└── README.md # Project documentation
+│   └── main.css
+└── README.md
 ```
 
----
+## Run Locally
 
-## ⚙️ Setup & Installation
+### 1. Clone
 
-#### 1. Clone the Repository
+```bash
+git clone https://github.com/UjjwalPatil01/smart-task-manager.git
+cd smart-task-manager
+```
 
-- ```git clone https://github.com/UjjwalPatil01/smart-task-manager.git```
+### 2. Install dependencies
 
-- ```cd smart-task-manager```
+```bash
+pip install -r requirements.txt
+```
 
-#### 2. Install Dependencies
-- ```pip install -r requirements.txt```
+### 3. Configure environment variables
 
-#### 3. Setup Environment Variables
+Create a `.env` file and add your Gemini API key:
 
-- Create a .env file in the root directory:
+```env
+GOOGLE_API_KEY=your_api_key_here
+```
 
-  - ```GOOGLE_API_KEY=your_api_key_here```
+Never commit real API keys.
 
-#### 4. Run Locally
-- ```python app.py```
+### 4. Run
 
-Open in browser:
+```bash
+python app.py
+```
 
-- ```http://127.0.0.1:5000```
+Open `http://127.0.0.1:5000` in your browser.
 
+## Deployment
 
-## 🌍 Deployment (Render)
+The current project is deployed on Render. Configure the required environment variable and use the Flask application start command supported by the deployment configuration.
 
-This project is deployed using Render.
+## What this project demonstrates
 
-- Steps:
+- Python and Flask backend development
+- CRUD application design
+- LLM API integration
+- Practical AI-assisted decision workflows
+- Responsive web application development
+- Deployment and environment-variable management
 
-  - Push code to GitHub
-  - Create a new Web Service on Render
-  - Connect your repository
-  - Add environment variable:
-    - ```GOOGLE_API_KEY```
-  - Set start command:
-    - ```python app.py```
+## Future Improvements
 
-- ⚠️ Note: For production, using gunicorn app:app is recommended.
+Potential next steps include persistent database storage, authentication, task categories, reminders, and richer AI-assisted productivity features.
 
-## 🔐 Security Note
+## Author
 
-- Never commit API keys
-- Use environment variables
-- Ensure ```.env``` is in ```.gitignore```
+**Ujjwal Pradip Patil**
 
-## 🚧 Future Improvements
-- User authentication (Login / Signup)
--  Database integration (MongoDB / PostgreSQL)
-- Task categories / tags
--  Notifications & reminders
--  Advanced AI insights
-
-## 👨‍💻 Author
-
-#### Ujjwal Pradip Patil
-
-## ⭐ Support
-
-If you like this project:
-  - Star ⭐ the repository
-  - Share it with others
-
-## 🧠 Key Learnings
-
-- Full-stack development using Flask
-- AI API integration (LLMs)
-- Real-world debugging & deployment
-- Clean UI/UX design
-
+[GitHub](https://github.com/UjjwalPatil01) · [LinkedIn](https://www.linkedin.com/in/ujjwalpatil-ai) · [Portfolio](https://ujjwal-ai-portfolio.vercel.app)
