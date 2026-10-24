@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Welcome to Smart Task Manager Legacy Flask edition",
+    "done": false,
+    "due": "2026-11-01",
+    "priority": "high",
+    "category": "work",
+    "ai": false
+  },
+  {
+    "title": "Sample legacy task for historical testing",
+    "done": true,
+    "due": "2026-10-24",
+    "priority": "medium",
+    "category": "personal",
+    "ai": false
+  }
+]

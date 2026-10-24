@@ -1,1 +1,57 @@
+# Environment variables
 .env
+.env.local
+.env.*
+!.env.example
+
+# Databases & SQLite (including WAL & SHM files)
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/*.db*
+data/*.sqlite*
+
+# User Data & Private Task Files
+tasks.json
+tasks_*.json
+data/*.json
+!data/tasks.example.json
+legacy_flask/tasks.json
+
+# Archives & Safe Deletions & External Backups
+delete_folder/
+.archive/
+*_backup/
+*_snapshot/
+
+# Python cache & artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# Testing & Linting
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# IDE & OS
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+.DS_Store

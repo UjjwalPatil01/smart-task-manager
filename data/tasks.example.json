@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Welcome to Smart Task Manager! Explore your new dashboard",
+    "done": false,
+    "due": "2026-11-01",
+    "priority": "high",
+    "category": "work",
+    "ai": false
+  },
+  {
+    "title": "Try AI Auto-Priority suggestion when creating a task",
+    "done": false,
+    "due": "2026-11-05",
+    "priority": "medium",
+    "category": "personal",
+    "ai": true
+  },
+  {
+    "title": "Inspect interactive charts and completion trends in Analytics",
+    "done": true,
+    "due": "2026-10-24",
+    "priority": "low",
+    "category": "study",
+    "ai": false
+  }
+]

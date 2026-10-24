@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Complete quarterly project review",
+    "done": false,
+    "due": "2026-11-15",
+    "priority": "high",
+    "category": "work",
+    "ai": false
+  },
+  {
+    "title": "Schedule dentist checkup",
+    "done": true,
+    "due": "2026-10-20",
+    "priority": "low",
+    "category": "personal",
+    "ai": false
+  },
+  {
+    "title": "Review team pull requests",
+    "done": false,
+    "due": "2026-10-25",
+    "priority": "medium",
+    "category": "work",
+    "ai": false
+  },
+  {
+    "title": "Prepare final exam study guide",
+    "done": false,
+    "due": "2026-11-01",
+    "priority": "high",
+    "category": "study",
+    "ai": false
+  },
+  {
+    "title": "Renew car insurance policy",
+    "done": true,
+    "due": "2026-09-30",
+    "priority": "medium",
+    "category": "personal",
+    "ai": false
+  }
+]
